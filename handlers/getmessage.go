@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"myapp/common"
+	"myapp/util"
 	"net/http"
 
 	"github.com/labstack/echo"
@@ -13,11 +15,18 @@ type GetMessageResponse struct {
 
 // GetMessage ...
 func GetMessage(c echo.Context) error {
-
-	// TODO
-	resp := &GetMessageResponse{
-		Message: "random_message",
+	publicKey := util.LoadRequestHeader(c, common.PublicKey)
+	if len(publicKey) == 0 {
+		c.Logger().Warn("empty publicKey")
+		return c.JSON(http.StatusBadRequest, nil)
 	}
+	c.Logger().Debugf("publicKey: %s", publicKey)
 
-	return c.JSON(http.StatusNotImplemented, resp)
+	msg := util.RandomMessage(publicKey) // publicKey as seed for now
+	c.Logger().Debugf("msg: %s", msg)
+
+	resp := &GetMessageResponse{
+		Message: msg,
+	}
+	return c.JSON(http.StatusOK, resp)
 }
