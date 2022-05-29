@@ -21,6 +21,10 @@ func main() {
 	e.GET("/get_message", handlers.GetMessage)
 	e.POST("/verify", handlers.Verify)
 
+	// util API for experiment purpose only
+	e.POST("/generate_key", handlers.GenerateKey)
+	e.POST("/sign", handlers.Sign)
+
 	// server start
 	e.Logger.Fatal(e.Start(":1323"))
 }
